@@ -22,6 +22,17 @@ class Astack
 		int length;
 		node<T> *top;
 	public:
+		bool isempty()
+		{
+			if(length)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
 		Astack(int l = 0,node<T>* p = NULL)
 		{
 			length = l;
@@ -81,38 +92,174 @@ class Astack
 			}
 		}
 };
-class Data
+template<typename T>
+class Bstack
 {
 	private:
-		int num;
-		std::string name;
-		int score;
+		T* top;
+		int size;
+		int length;
 	public:
-		Data(int n = 0,std::string a = "noname",int s = 0)
+		int getlength()
 		{
-			num = n;
-			name = a;
-			score = s;
+			return length;
 		}
-		void set(int n,std::string a,int s)
+		Bstack(int s)
 		{
-			num = n;
-			name = a;
-			score = s;
+			if(s<=0)
+			{
+				std::cerr<<"bad stack size\n";
+				exit(1);
+			}
+			size = s;
+			top = new T[size];
+			length = 0;
 		}
-		void print()
+		~Bstack()
 		{
-			std::cout<<num<<"\n"<<name<<"\n"<<score<<"\n";
+			delete[] top;
+		}
+		bool isempty()
+		{
+			if(length)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		bool isfull()
+		{
+			if((size-length) == 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		void push(T& data)
+		{
+			if(isfull())
+			{
+				std::cout<<"can't push is full\n";
+				return;
+			}
+			top[length++] = data;
+		}
+		void pop(T& data)
+		{
+			if(isempty())
+			{
+				std::cout<<"can't pop is empty\n";
+				return;
+			}
+			data = top[--length];
+		}
+		void peek(T& data)
+		{
+			if(isempty())
+			{
+				std::cout<<"can't peek is empty\n";
+				return;
+			}
+			data = top[length-1];
 		}
 };
+template <typename T>
+void selectitem(Astack<T>& s,T& n)
+{
+	T temp,ex;
+	Astack<T> t;
+	s.pop(temp);
+	while(n != temp)
+	{
+		if(s.isempty())
+		{
+			std::cout<<"no such thing\n";
+			return;
+		}
+		t.push(temp);
+		s.pop(temp);
+	}
+	while(!t.isempty())
+	{
+		t.pop(ex);
+		s.push(ex);
+	}
+	s.push(temp);
+	std::cout<<"complete\n";
+	return;
+
+}
+template <typename T>
+void selectitem(Bstack<T>& s,T& n)
+{
+	T temp,ex;
+	Bstack<T> t(s.getlength());
+	s.pop(temp);
+	while(n != temp)
+	{
+		if(s.isempty())
+		{
+			std::cout<<"no such thing\n";
+			return;
+		}
+		t.push(temp);
+		s.pop(temp);
+	}
+	while(!t.isempty())
+	{
+		t.pop(ex);
+		s.push(ex);
+	}
+	s.push(temp);
+	return;
+}
+//class Data
+//{
+//	private:
+//		int num;
+//		std::string name;
+//		int score;
+//	public:
+//		Data(int n = 0,std::string a = "noname",int s = 0)
+//		{
+//			num = n;
+//			name = a;
+//			score = s;
+//		}
+//		void set(int n,std::string a,int s)
+//		{
+//			num = n;
+//			name = a;
+//			score = s;
+//		}
+//		void print()
+//		{
+//			std::cout<<num<<"\n"<<name<<"\n"<<score<<"\n";
+//		}
+//};
 int main()
 {
-	Astack<Data> stack;
-	Data a(55160513,"yhc",88),b(55160514,"sgt",98),c(55160520,"zpx",99),d;
+	Astack<int> stack;
+	Bstack<int> stackB(3);
+	int a = 1,b = 2,c = 3,d = 0;
 	stack.push(a);
 	stack.push(b);
 	stack.push(c);
+	selectitem<int>(stack,b);
 	stack.pop(d);
+	std::cout<<d;
+	stackB.push(a);
+	stackB.push(b);
+	stackB.push(c);
+	selectitem<int>(stackB,a);
+	stackB.pop(d);
+	std::cout<<d;
 	return 0;
 
 }
